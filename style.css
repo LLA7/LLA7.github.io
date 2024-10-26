@@ -1,0 +1,91 @@
+
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    background-color: #000;
+    color: #fff;
+    overflow-x: hidden;
+}
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background-color: rgba(0,0,0,0.8);
+    backdrop-filter: blur(10px);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+.search-box {
+    display: flex;
+}
+.search-box input {
+    padding: 10px;
+    border: none;
+    border-radius: 20px 0 0 20px;
+    background-color: rgba(255,255,255,0.1);
+    color: #fff;
+    font-size: 16px;
+}
+.search-box button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #0071e3;
+    color: white;
+    border-radius: 0 20px 20px 0;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+.search-box button:hover {
+    background-color: #0077ed;
+}
+.weather-widget {
+    font-size: 16px;
+}
+main {
+    padding: 100px 40px 40px;
+}
+section {
+    margin-bottom: 100px;
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+section.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+h1, h2 {
+    font-weight: 700;
+    margin-bottom: 30px;
+}
+h1 {
+    font-size: 48px;
+}
+h2 {
+    font-size: 36px;
+}
+p {
+    font-size: 18px;
+    line-height: 1.6;
+    max-width: 800px;
+}
+#gameContainer {
+    text-align: center;
+}
+canvas {
+    border: 1px solid #333;
+    max-width: 100%;
+}
+footer {
+    background-color: #1d1d1f;
+    color: #86868b;
+    text-align: center;
+    padding: 20px;
+    font-size: 14px;
+}
