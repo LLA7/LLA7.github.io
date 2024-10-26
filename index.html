@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的个人网页</title>
+   
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background-color: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+        .search-box {
+            display: flex;
+        }
+        .search-box input {
+            padding: 10px;
+            border: none;
+            border-radius: 20px 0 0 20px;
+            background-color: rgba(255,255,255,0.1);
+            color: #fff;
+            font-size: 16px;
+        }
+        .search-box button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #0071e3;
+            color: white;
+            border-radius: 0 20px 20px 0;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .search-box button:hover {
+            background-color: #0077ed;
+        }
+        .weather-widget {
+            font-size: 16px;
+        }
+        main {
+            padding: 100px 40px 40px;
+        }
+        section {
+            margin-bottom: 100px;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        h1, h2 {
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+        h1 {
+            font-size: 48px;
+        }
+        h2 {
+            font-size: 36px;
+        }
+        p {
+            font-size: 18px;
+            line-height: 1.6;
+            max-width: 800px;
+        }
+        #gameContainer {
+            text-align: center;
+        }
+        canvas {
+            border: 1px solid #333;
+            max-width: 100%;
+        }
+        footer {
+            background-color: #1d1d1f;
+            color: #86868b;
+            text-align: center;
+            padding: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="search-box">
+            <input type="text" placeholder="必应搜索">
+            <button onclick="searchBing()">搜索</button>
+        </div>
+        <div class="weather-widget" id="weather">
+            <span id="location"></span>
+            <span id="weather-desc"></span>
+            <span id="temperature"></span>
+        </div>
+    </div>
+
+    <main>
+        <section id="about">
+            <h1>关于我</h1>
+            <p>这里是您的个人简介...</p>
+        </section>
+        
+        <section id="projects">
+            <h2>项目展示</h2>
+            <p>这里可以列出您的个人项目或作品...</p>
+        </section>
+        
+        <section id="game">
+            <h2>蔡徐坤跳跃游戏</h2>
+            <p>这是我制作的一个有趣的小游戏，灵感来自蔡徐坤。</p>
+            <div id="gameContainer">
+                <div id="start-screen" class="game-screen">
+                    <p>点击开始游戏</p>
+                    <button id="start-button">开始游戏</button>
+                </div>
+                <div id="game-screen" class="game-screen" style="display: none;">
+                    <canvas id="gameCanvas" width="800" height="400"></canvas>
+                    <p>得分: <span id="score">0</span></p>
+                    <button id="pause-button">暂停</button>
+                </div>
+                <div id="end-screen" class="game-screen" style="display: none;">
+                    <h3>游戏结束</h3>
+                    <p>你的得分: <span id="final-score"></span></p>
+                    <p>最高分: <span id="high-score"></span></p>
+                    <button id="restart-button">重新开始</button>
+                </div>
+            </div>
+        </section>
+        
+        <section id="contact">
+            <h2>联系方式</h2>
+            <p>这里是您的联系方式...</p>
+        </section>
+    </main>
+    
+    <footer>
+        <p>&copy; 2023 您的名字. 保留所有权利。</p>
+    </footer>
+    
+    <script>
+        function searchBing() {
+            var query = document.querySelector('.search-box input').value;
+            window.open('https://www.bing.com/search?q=' + encodeURIComponent(query), '_blank');
+        }
+
+        function getWeather() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    
+                    // 使用高德地图的天气API
+                    const url = `https://restapi.amap.com/v3/weather/weatherInfo?key=YOUR_API_KEY&city=${lon},${lat}&extensions=base&output=JSON`;
+                    
+                    fetch(url)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === '1' && data.lives.length > 0) {
+                                const weather = data.lives[0];
+                                document.getElementById('location').textContent = weather.city;
+                                document.getElementById('weather-desc').textContent = weather.weather;
+                                document.getElementById('temperature').textContent = `${weather.temperature}°C`;
+                            } else {
+                                document.getElementById('weather').textContent = '无法获取天气信息';
+                            }
+                        })
+                        .catch(error => {
+                            console.error('获取天气信息时出错:', error);
+                            document.getElementById('weather').textContent = '获取天气信息失败';
+                        });
+                }, () => {
+                    document.getElementById('weather').textContent = '无法获取位置信息';
+                });
+            } else {
+                document.getElementById('weather').textContent = '您的浏览器不支持地理位置';
+            }
+        }
+
+        // 添加滚动动画
+        function checkScroll() {
+            var sections = document.querySelectorAll('section');
+            sections.forEach(function(section) {
+                var sectionTop = section.getBoundingClientRect().top;
+                var screenPosition = window.innerHeight / 1.3;
+                
+                if(sectionTop < screenPosition) {
+                    section.classList.add('visible');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', checkScroll);
+        window.addEventListener('load', function() {
+            getWeather();
+            checkScroll();
+        });
+
+        // 游戏相关代码
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // 游戏变量
+        let gameLoop;
+        let cxk;
+        let basketballs = [];
+        let score = 0;
+        let gameSpeed = 5;
+
+        // 蔡徐坤角色
+        class Cxk {
+            constructor() {
+                this.x = 50;
+                this.y = canvas.height - 60;
+                this.width = 50;
+                this.height = 60;
+                this.jumping = false;
+                this.jumpHeight = 100;
+                this.jumpCount = 0;
+            }
+
+            draw() {
+                ctx.fillStyle = 'blue';
+                ctx.fillRect(this.x, this.y, this.width, this.height);
+            }
+
+            jump() {
+                if (!this.jumping) {
+                    this.jumping = true;
+                    this.jumpCount = 0;
+                }
+            }
+
+            update() {
+                if (this.jumping) {
+                    this.jumpCount++;
+                    if (this.jumpCount < 15) {
+                        this.y -= 5;
+                    } else if (this.jumpCount > 15 && this.jumpCount < 30) {
+                        this.y += 5;
+                    } else {
+                        this.jumping = false;
+                        this.y = canvas.height - 60;
+                    }
+                }
+            }
+        }
+
+        // 篮球障碍物
+        class Basketball {
+            constructor() {
+                this.x = canvas.width;
+                this.y = canvas.height - 30;
+                this.width = 30;
+                this.height = 30;
+            }
+
+            draw() {
+                ctx.fillStyle = 'orange';
+                ctx.beginPath();
+                ctx.arc(this.x + this.width / 2, this.y + this.height / 2, this.width / 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            update() {
+                this.x -= gameSpeed;
+            }
+        }
+
+        // 初始化游戏
+        function init() {
+            cxk = new Cxk();
+            score = 0;
+            basketballs = [];
+            gameSpeed = 5;
+        }
+
+        // 游戏主循环
+        function gameLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            cxk.update();
+            cxk.draw();
+
+            if (Math.random() < 0.02) {
+                basketballs.push(new Basketball());
+            }
+
+            for (let i = basketballs.length - 1; i >= 0; i--) {
+                basketballs[i].update();
+                basketballs[i].draw();
+
+                if (
+                    cxk.x < basketballs[i].x + basketballs[i].width &&
+                    cxk.x + cxk.width > basketballs[i].x &&
+                    cxk.y < basketballs[i].y + basketballs[i].height &&
+                    cxk.y + cxk.height > basketballs[i].y
+                ) {
+                    gameOver();
+                    return;
+                }
+
+                if (basketballs[i].x + basketballs[i].width < 0) {
+                    basketballs.splice(i, 1);
+                    score++;
+                }
+            }
+
+            ctx.fillStyle = 'white';
+            ctx.font = '20px Arial';
+            ctx.fillText(`得分: ${score}`, 10, 30);
+
+            if (score % 10 === 0 && score !== 0) {
+                gameSpeed += 0.5;
+            }
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        // 游戏结束
+        function gameOver() {
+            cancelAnimationFrame(gameLoop);
+            document.getElementById('final-score').textContent = score;
+            document.getElementById('high-score').textContent = Math.max(score, localStorage.getItem('highScore') || 0);
+            localStorage.setItem('highScore', Math.max(score, localStorage.getItem('highScore') || 0));
+            document.getElementById('game-screen').style.display = 'none';
+            document.getElementById('end-screen').style.display = 'block';
+        }
+
+        // 事件监听器
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                cxk.jump();
+            }
+        });
+
+        canvas.addEventListener('click', () => {
+            cxk.jump();
+        });
+
+        document.getElementById('start-button').addEventListener('click', () => {
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'block';
+            init();
+            gameLoop();
+        });
+
+        document.getElementById('restart-button').addEventListener('click', () => {
+            document.getElementById('end-screen').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'block';
+            init();
+            gameLoop();
+        });
+    </script>
+</body>
+</html>
