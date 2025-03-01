@@ -1,91 +1,216 @@
+:root {
+    --primary-color: #1d1d1f;
+    --secondary-color: #86868b;
+    --bg-color: #f5f5f7;
+    --section-bg: rgba(255, 255, 255, 0.7);
+    --shadow-color: rgba(0, 0, 0, 0.08);
+    --hover-shadow: rgba(0, 0, 0, 0.12);
+    --border-color: rgba(0, 0, 0, 0.1);
+}
 
+/* 基础样式 */
 body, html {
     margin: 0;
     padding: 0;
-    font-family: 'Roboto', sans-serif;
-    background-color: #000;
-    color: #fff;
-    overflow-x: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+    background: linear-gradient(145deg, #f5f5f7, #ffffff);
+    color: var(--primary-color);
+    line-height: 1.47059;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
 }
+
+/* 顶部导航栏 */
 .top-bar {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    padding: 20px 40px;
-    background-color: rgba(0,0,0,0.8);
-    backdrop-filter: blur(10px);
+    padding: 0.8rem 2rem;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
+    width: 100%;
+    box-sizing: border-box;
+    z-index: 100;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
-.search-box {
-    display: flex;
-}
-.search-box input {
-    padding: 10px;
-    border: none;
-    border-radius: 20px 0 0 20px;
-    background-color: rgba(255,255,255,0.1);
-    color: #fff;
-    font-size: 16px;
-}
-.search-box button {
-    padding: 10px 20px;
-    border: none;
-    background-color: #0071e3;
-    color: white;
-    border-radius: 0 20px 20px 0;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-}
-.search-box button:hover {
-    background-color: #0077ed;
-}
-.weather-widget {
-    font-size: 16px;
-}
+
+/* 主要内容区域 */
 main {
-    padding: 100px 40px 40px;
+    padding-top: 80px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 20px 40px;
 }
-section {
-    margin-bottom: 100px;
-    opacity: 0;
-    transform: translateY(50px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
-}
-section.visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-h1, h2 {
-    font-weight: 700;
-    margin-bottom: 30px;
-}
-h1 {
-    font-size: 48px;
-}
-h2 {
-    font-size: 36px;
-}
-p {
-    font-size: 18px;
-    line-height: 1.6;
-    max-width: 800px;
-}
+
+/* 游戏容器 */
 #gameContainer {
-    text-align: center;
+    position: relative;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 24px;
+    padding: 2rem;
+    min-height: 500px;
+    box-shadow: 
+        0 4px 24px var(--shadow-color),
+        0 1px 2px var(--shadow-color);
+    backdrop-filter: blur(20px);
+    overflow: hidden;
 }
+
+/* 游戏画布 */
 canvas {
-    border: 1px solid #333;
-    max-width: 100%;
+    width: 100%;
+    max-width: 800px;
+    height: auto;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px var(--shadow-color);
+    background: #fff;
 }
-footer {
-    background-color: #1d1d1f;
-    color: #86868b;
+
+/* 开始界面 */
+.start-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
     text-align: center;
-    padding: 20px;
-    font-size: 14px;
+    z-index: 10;
 }
+
+.game-title {
+    margin-bottom: 2rem;
+}
+
+.game-title h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin: 0;
+    background: linear-gradient(135deg, #1d1d1f 0%, #434343 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -1px;
+}
+
+/* 结束界面 */
+.end-content {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2.5rem;
+    border-radius: 24px;
+    text-align: center;
+    max-width: 480px;
+    width: 90%;
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.1),
+        0 1px 8px rgba(0, 0, 0, 0.05);
+    animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.score-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    margin: 2.5rem 0;
+}
+
+.score-card {
+    flex: 1;
+    padding: 1.5rem;
+    background: linear-gradient(145deg, #f8f8f8, #ffffff);
+    border-radius: 20px;
+    box-shadow: 
+        0 4px 15px rgba(0, 0, 0, 0.05),
+        0 1px 2px rgba(0, 0, 0, 0.03);
+    transition: transform 0.3s ease;
+}
+
+.score-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+/* 按钮样式 */
+.start-button, .primary-button {
+    background: linear-gradient(135deg, #2d2d2f, #1d1d1f);
+    color: white;
+    border: none;
+    padding: 1.2rem 3.8rem;
+    font-size: 1.2rem;
+    font-weight: 500;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.start-button:hover, .primary-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+
+/* 动画 */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .game-title h1 {
+        font-size: 2.5rem;
+    }
+    
+    .start-button, .primary-button {
+        padding: 1rem 2.5rem;
+        font-size: 1.1rem;
+    }
+    
+    .score-container {
+        flex-direction: column;
+        gap: 1rem;
+    }
+} 
+
+/* 搜索框样式 */
+.search-input {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 0.8rem 1.2rem;
+    font-size: 1rem;
+    width: 100%;
+    max-width: 320px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 12px var(--hover-shadow);
+    transform: translateY(-1px);
+}
+
+.search-input::placeholder {
+    color: var(--secondary-color);
+    opacity: 0.8;
+}
+
+/* 响应式设计部分添加 */
+@media (max-width: 768px) {
+    .search-input {
+        max-width: 100%;
+        padding: 0.7rem 1rem;
+    }
+} 
